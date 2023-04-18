@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <title>Controle de Estacionamento</title>
+</head>
+
+<body>
+	<h1>Controle de Estacionamento</h1>
+	<form>		
+		<div class="grid-container">
+			<div class="grid-item">
+				<label for="newPlaca">Placa</label>
+				<input type="text" name="placa" id="newPlaca" required>
+			</div>
+			<div class="grid-item">
+				<label for="newVeiculo">Veículo</label>
+				<input type="text" name="veiculo" id="newVeiculo" required>
+			</div>
+			<div class="grid-item">
+				<label for="newDataHoraEntrada">Data Hora Entrada</label>
+				<input type="datetime-local" name="entrada" id="newDataHoraEntrada" required>
+			</div>
+			<div class="grid-item">
+				<label for="newDataHoraSaida">Data Hora Saída</label>
+				<input type="datetime-local" name="saida" id="newDataHoraSaida" required>
+			</div>
+			<div class="grid-item">
+				<label for="newPrice">Valor</label>
+				<input type="text" name="valor" id="newPrice" required>
+			</div>
+		</div>
+		<input type="submit" value="Registrar" onclick="newItem()" class="addBtn">	
+	</form>
+
+	<table id="myTable">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Placa</th>
+				<th>Veículo</th>
+				<th>Data Hora Entrada</th>
+				<th>Data Hora Saída</th>
+				<th>Valor</th>
+				<th>Ações</th>
+			</tr>
+		</thead>
+	</table>
+    <script src="scripts.js"></script>
+</body>
+</html>
