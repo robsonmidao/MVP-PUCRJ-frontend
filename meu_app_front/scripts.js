@@ -55,15 +55,12 @@ const postItem = async (inputPlaca, inputVeiculo, inputDataHoraEntrada, inputDat
   Função para colocar um item na lista do servidor via requisição POST
   --------------------------------------------------------------------------------------
 */
-const postComentario = async (inputPlaca, inputVeiculo, inputDataHoraEntrada, inputDataHoraSaida, inputPrice) => {
+const postComentario = async (inputId, texto) => {
   const formData = new FormData();
-  formData.append('placa', inputPlaca);
-  formData.append('veiculo', inputVeiculo);
-  formData.append('data_hora_entrada', inputDataHoraEntrada);
-  formData.append('data_hora_saida', inputDataHoraSaida);
-  formData.append('valor', inputPrice);
+  formData.append('estacionamento_id', inputId);
+  formData.append('texto', texto);
 
-  let url = 'http://127.0.0.1:5000/estacionamento';
+  let url = 'http://127.0.0.1:5000/comentario';
   fetch(url, {
     method: 'post',
     body: formData
@@ -163,11 +160,11 @@ const exibeItem = (item) => {
         texto = texto  + "Data: <b>" + formatarDataHora(data.comentarios[i].data_insercao) + "</b></br>Comentário: <b>" + data.comentarios[i].texto + "</b></br></br>";
       }
       if (texto != "")
-        comentario = "Placa: <b>" + data.placa + "</b></br></br> Veículo: <b>" + data.veiculo + "</b></br></br>" + texto ;
+        comentario = "<center>Placa: <b>" + data.placa + "</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Veículo: <b>" + data.veiculo + "</center></b></br></br>" + texto ;
       else     
-        comentario = "Placa: <b>" + data.placa + "</b></br></br> Veículo: <b>" + data.veiculo + "</b></br></br> Comentários: </br><b>Nenhum comentário cadastrado.</b>"
+        comentario = "<center>Placa: <b>" + data.placa + "</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Veículo: <b>" + data.veiculo + "</b></br></br> <b>Nenhum comentário cadastrado.</center></b>"
           
-      showDetails(comentario)
+      showDetails(comentario, data.id)
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -214,6 +211,26 @@ const newItem = () => {
     
     alert("Registro adicionado!")
     getList()
+  }
+}
+
+/*
+  --------------------------------------------------------------------------------------
+  Função para adicionar um novo comentário 
+  --------------------------------------------------------------------------------------
+*/
+const newComentario = () => {
+  
+  let inputId = document.getElementById("hidId").value;
+  let inputTexto = document.getElementById("newTexto").value;
+  if (inputTexto === '') {
+    alert("Escreva um comentário ou observação!");  
+  } else {
+    postComentario(inputId, inputTexto)
+    alert("Registro adicionado!")
+    document.getElementById("hidId").value = "";
+    document.getElementById("newTexto").value = "";
+    modal.style.display = "none";
   }
 }
 
@@ -303,8 +320,9 @@ var modal = document.getElementById("modal");
 var span = document.getElementsByClassName("fechar")[0];
 
 // When the user clicks the "Detalhes" button, open the modal 
-function showDetails(text) {
+function showDetails(text,id) {
   document.getElementById("modalText").innerHTML = text;
+  document.getElementById("hidId").value = id;
   modal.style.display = "block";
 }
 
