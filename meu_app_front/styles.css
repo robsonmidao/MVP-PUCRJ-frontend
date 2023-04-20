@@ -6,6 +6,13 @@ body {
     padding: 0;
 }
 
+body {
+    background-image: url('img/Estacionamento.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
 h1 {
     text-align: center;
     margin-top: 40px;
@@ -187,4 +194,8 @@ label {
     color: black;
     text-decoration: none;
     cursor: pointer;
+  }
+
+  fieldset {
+    background-color: rgba(80, 75, 75, 0.8); /* Define a cor de fundo com opacidade de 80% */
   }
