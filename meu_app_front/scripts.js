@@ -50,7 +50,29 @@ const postItem = async (inputPlaca, inputVeiculo, inputDataHoraEntrada, inputDat
     });
 }
 
+/*
+  --------------------------------------------------------------------------------------
+  Função para colocar um item na lista do servidor via requisição POST
+  --------------------------------------------------------------------------------------
+*/
+const postComentario = async (inputPlaca, inputVeiculo, inputDataHoraEntrada, inputDataHoraSaida, inputPrice) => {
+  const formData = new FormData();
+  formData.append('placa', inputPlaca);
+  formData.append('veiculo', inputVeiculo);
+  formData.append('data_hora_entrada', inputDataHoraEntrada);
+  formData.append('data_hora_saida', inputDataHoraSaida);
+  formData.append('valor', inputPrice);
 
+  let url = 'http://127.0.0.1:5000/estacionamento';
+  fetch(url, {
+    method: 'post',
+    body: formData
+  })
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
 /*
   --------------------------------------------------------------------------------------
   Função para criar um botão close para cada item da lista
@@ -62,6 +84,21 @@ const insertButton = (parent) => {
   span.className = "close";
   txt.innerText = "Excluir"
   txt.className = "delete-btn"
+  span.appendChild(txt);
+  parent.appendChild(span);
+}
+
+/*
+  --------------------------------------------------------------------------------------
+  Função para criar um botão detalhes para cada item da lista
+  --------------------------------------------------------------------------------------
+*/
+const insertButtonDetalhes = (parent) => {
+  let span = document.createElement("span");
+  let txt = document.createElement("button");
+  span.className = "detalhes";
+  txt.innerText = "Visualizar"
+  txt.className = "detalhes-btn"
   span.appendChild(txt);
   parent.appendChild(span);
 }
@@ -87,6 +124,52 @@ const removeElement = () => {
       }
     }
   }
+}
+
+/*
+  --------------------------------------------------------------------------------------
+  Função para exibir o comentário e demais detalhes
+  --------------------------------------------------------------------------------------
+*/
+const showElement = () => {
+  let detalhes = document.getElementsByClassName("detalhes");
+  let i;
+  for (i = 0; i < detalhes.length; i++) {
+    detalhes[i].onclick = function () {
+      let div = this.parentElement.parentElement;
+      const nomeItem = div.getElementsByTagName('td')[0].innerHTML
+      exibeItem(nomeItem)
+    }
+  }
+}
+
+/*
+  --------------------------------------------------------------------------------------
+  Função para exibir um item da lista do servidor via requisição GET
+  --------------------------------------------------------------------------------------
+*/
+const exibeItem = (item) => {
+  console.log(item)
+  let url = 'http://127.0.0.1:5000/estacionamento?id=' + item;
+  fetch(url, {
+    method: 'get',
+  })
+    .then((response) => response.json())
+    .then((data) => {      
+      var comentario = "";
+      try 
+      {
+        comentario = "Placa: <b>" + data.placa + "</b></br></br> Veículo: <b>" + data.veiculo + "</b></br></br> Comentários: </br><b>" + data.comentarios[0].texto +"</b>";
+      }
+      catch(e)
+      {
+        comentario = "Placa: <b>" + data.placa + "</b></br></br> Veículo: <b>" + data.veiculo + "</b></br></br> Comentários: </br><b>Nenhum comentário cadastrado.</b>"
+      }     
+      showDetails(comentario)
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
 }
 
 /*
@@ -140,12 +223,12 @@ const newItem = () => {
 const insertList = (id, placa, veiculo, data_hora_entrada,data_hora_saida, price) => {
   var item = [id, placa, veiculo, data_hora_entrada,data_hora_saida, price]
   var table = document.getElementById('myTable');
-  var row = table.insertRow();
-
+  var row = table.insertRow();  
   for (var i = 0; i < item.length; i++) {
     var cel = row.insertCell(i);
     cel.textContent = item[i];
   }
+  insertButtonDetalhes(row.insertCell(-1))
   insertButton(row.insertCell(-1))
   document.getElementById("newPlaca").value = "";
   document.getElementById("newVeiculo").value = "";
@@ -154,6 +237,7 @@ const insertList = (id, placa, veiculo, data_hora_entrada,data_hora_saida, price
   document.getElementById("newPrice").value = "";
 
   removeElement()
+  showElement()
 }
 
 /*
@@ -190,7 +274,11 @@ function formatarDataHora(dataHoraStr) {
   return dataHoraFormatada;
 }
 
-
+/*
+  --------------------------------------------------------------------------------------
+  Função para formatar um valor para ser exibido como moeda brasileira (R$ 0,00)
+  --------------------------------------------------------------------------------------
+*/
 function formatMoney(value) {
   const formatter = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -198,4 +286,34 @@ function formatMoney(value) {
     minimumFractionDigits: 2
   });
   return formatter.format(value);
+}
+
+
+/*
+  --------------------------------------------------------------------------------------
+  Funções para manipular o modal de comentários
+  --------------------------------------------------------------------------------------
+*/
+// Get the modal element
+var modal = document.getElementById("modal");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("fechar")[0];
+
+// When the user clicks the "Detalhes" button, open the modal 
+function showDetails(text) {
+  document.getElementById("modalText").innerHTML = text;
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
 }

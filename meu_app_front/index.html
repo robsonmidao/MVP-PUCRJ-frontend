@@ -37,7 +37,13 @@
 		</div>
 		<input type="submit" value="Registrar" onclick="newItem()" class="addBtn">	
 	</form>
-
+	<div id="modal" class="modal">
+		<div class="modal-content">
+			<span class="fechar">&times;</span>
+			<h2>Detalhes</h2>
+			<p id="modalText"></p>
+		</div>
+	</div>
 	<table id="myTable">
 		<thead>
 			<tr>
@@ -47,7 +53,8 @@
 				<th>Data Hora Entrada</th>
 				<th>Data Hora Saída</th>
 				<th>Valor</th>
-				<th>Ações</th>
+				<th>Comentários</th>
+				<th>Excluir</th>
 			</tr>
 		</thead>
 	</table>
