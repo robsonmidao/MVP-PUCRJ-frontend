@@ -157,14 +157,16 @@ const exibeItem = (item) => {
     .then((response) => response.json())
     .then((data) => {      
       var comentario = "";
-      try 
-      {
-        comentario = "Placa: <b>" + data.placa + "</b></br></br> Veículo: <b>" + data.veiculo + "</b></br></br> Comentários: </br><b>" + data.comentarios[0].texto +"</b>";
+      var texto = "";
+       
+      for (var i = 0; i < data.comentarios.length; i++) {
+        texto = texto  + "Data: <b>" + formatarDataHora(data.comentarios[i].data_insercao) + "</b></br>Comentário: <b>" + data.comentarios[i].texto + "</b></br></br>";
       }
-      catch(e)
-      {
+      if (texto != "")
+        comentario = "Placa: <b>" + data.placa + "</b></br></br> Veículo: <b>" + data.veiculo + "</b></br></br>" + texto ;
+      else     
         comentario = "Placa: <b>" + data.placa + "</b></br></br> Veículo: <b>" + data.veiculo + "</b></br></br> Comentários: </br><b>Nenhum comentário cadastrado.</b>"
-      }     
+          
       showDetails(comentario)
     })
     .catch((error) => {
